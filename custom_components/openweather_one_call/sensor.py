@@ -8,39 +8,38 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import (
-    CONCENTRATION_PARTS_PER_MILLION,
     DEGREE,
     UnitOfLength,
     PERCENTAGE,
-    PRESSURE_HPA,
-    SPEED_METERS_PER_SECOND,
-    TEMP_CELSIUS,
+    UnitOfPressure,
+    UnitOfSpeed,
+    UnitOfTemperature,
     UV_INDEX,
 )
 
 from .const import DOMAIN
 
 SENSOR_TYPES = {
-    "temp": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": TEMP_CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "feels_like": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": TEMP_CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "pressure": {"device_class": SensorDeviceClass.PRESSURE, "unit": PRESSURE_HPA, "state_class": SensorStateClass.MEASUREMENT},
+    "temp": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "feels_like": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "pressure": {"device_class": SensorDeviceClass.PRESSURE, "unit": UnitOfPressure.HPA, "state_class": SensorStateClass.MEASUREMENT},
     "humidity": {"device_class": SensorDeviceClass.HUMIDITY, "unit": PERCENTAGE, "state_class": SensorStateClass.MEASUREMENT},
-    "dew_point": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": TEMP_CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "dew_point": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
     "clouds": {"device_class": None, "unit": PERCENTAGE, "state_class": SensorStateClass.MEASUREMENT},
     "uvi": {"device_class": None, "unit": UV_INDEX, "state_class": SensorStateClass.MEASUREMENT},
     "visibility": {"device_class": None, "unit": UnitOfLength.METERS, "state_class": SensorStateClass.MEASUREMENT},
-    "wind_speed": {"device_class": None, "unit": SPEED_METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
+    "wind_speed": {"device_class": None, "unit": UnitOfSpeed.METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
     "wind_deg": {"device_class": None, "unit": DEGREE, "state_class": SensorStateClass.MEASUREMENT},
-    "wind_gust": {"device_class": None, "unit": SPEED_METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
+    "wind_gust": {"device_class": None, "unit": UnitOfSpeed.METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
     "weather_main": {"device_class": None, "unit": None, "state_class": None},
     "weather_description": {"device_class": None, "unit": None, "state_class": None},
     "pop": {"device_class": None, "unit": PERCENTAGE, "state_class": SensorStateClass.MEASUREMENT},
-    "daily_temp_day": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": TEMP_CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "daily_temp_min": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": TEMP_CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "daily_temp_max": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": TEMP_CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "daily_temp_night": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": TEMP_CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "daily_temp_eve": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": TEMP_CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "daily_temp_morn": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": TEMP_CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "daily_temp_day": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "daily_temp_min": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "daily_temp_max": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "daily_temp_night": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "daily_temp_eve": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "daily_temp_morn": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
     "daily_pop": {"device_class": None, "unit": PERCENTAGE, "state_class": SensorStateClass.MEASUREMENT},
 }
 
