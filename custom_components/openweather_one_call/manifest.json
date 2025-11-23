@@ -1,0 +1,12 @@
+{
+  "domain": "openweather_one_call",
+  "name": "OpenWeatherMap One Call",
+  "version": "0.0.1",
+  "documentation": "https://github.com/Lomion-tm/ha-openweather-one-call",
+  "issue_tracker": "https://github.com/Lomion-tm/ha-openweather-one-call/issues",
+  "dependencies": [],
+  "codeowners": ["@Lomion-tm"],
+  "requirements": ["aiohttp"],
+  "iot_class": "cloud_polling",
+  "integration_type": "service"
+}
