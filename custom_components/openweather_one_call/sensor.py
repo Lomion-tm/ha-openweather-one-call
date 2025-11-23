@@ -78,13 +78,13 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
         self._sensor_type = sensor_type
         self._forecast_day = forecast_day
 
-        self._attr_has_entity_name = True
-        self._attr_translation_key = sensor_type
         self._attr_unique_id = f"{config_entry.entry_id}_{sensor_type}"
         if forecast_day is not None:
-             self._attr_unique_id += f"_{forecast_day}d"
-             self._attr_name = f"{config_entry.data['name']} {sensor_type.replace('_', ' ').title()} {forecast_day}d"
-             self._attr_has_entity_name = False # Let's not use translation for forecast days for now
+            self._attr_unique_id += f"_{forecast_day}d"
+            self._attr_name = f"{config_entry.data['name']} {sensor_type.replace('_', ' ').title()} {forecast_day}d"
+        else:
+            self._attr_has_entity_name = True
+            self._attr_translation_key = sensor_type
              
         self._attr_device_class = SENSOR_TYPES[sensor_type]["device_class"]
         self._attr_native_unit_of_measurement = SENSOR_TYPES[sensor_type]["unit"]
