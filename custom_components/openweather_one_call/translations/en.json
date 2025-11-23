@@ -1,0 +1,63 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "OpenWeatherMap One Call",
+        "description": "Enter your OpenWeatherMap API Key and location.",
+        "data": {
+          "api_key": "API Key",
+          "name": "Name",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "max_daily_requests": "Maximum Daily Requests"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the OpenWeatherMap API. Please check your API key and internet connection.",
+      "invalid_auth": "Invalid API key. Please check your API key.",
+      "unknown": "An unknown error occurred."
+    },
+    "abort": {
+      "already_configured": "This location is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "OpenWeatherMap One Call Options",
+        "data": {
+          "max_daily_requests": "Maximum Daily Requests"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "temp": { "name": "Temperature" },
+      "feels_like": { "name": "Feels Like" },
+      "pressure": { "name": "Pressure" },
+      "humidity": { "name": "Humidity" },
+      "dew_point": { "name": "Dew Point" },
+      "clouds": { "name": "Cloudiness" },
+      "uvi": { "name": "UV Index" },
+      "visibility": { "name": "Visibility" },
+      "wind_speed": { "name": "Wind Speed" },
+      "wind_deg": { "name": "Wind Degree" },
+      "wind_gust": { "name": "Wind Gust" },
+      "weather_main": { "name": "Weather Main" },
+      "weather_description": { "name": "Weather Description" },
+      "pop": { "name": "Probability of Precipitation" },
+      "daily_temp_day": { "name": "Daily Temperature (Day)" },
+      "daily_temp_min": { "name": "Daily Temperature (Min)" },
+      "daily_temp_max": { "name": "Daily Temperature (Max)" },
+      "daily_temp_night": { "name": "Daily Temperature (Night)" },
+      "daily_temp_eve": { "name": "Daily Temperature (Evening)" },
+      "daily_temp_morn": { "name": "Daily Temperature (Morning)" },
+      "daily_pop": { "name": "Daily Probability of Precipitation" }
+    },
+    "binary_sensor": {
+      "alerts_active": { "name": "Weather Alerts Active" }
+    }
+  }
+}
