@@ -61,6 +61,6 @@ class OpenWeatherOneCallBinarySensor(CoordinatorEntity, BinarySensorEntity):
         return {
             "identifiers": {(DOMAIN, self.config_entry.entry_id)},
             "name": self.config_entry.data["name"],
-            "manufacturer": "OpenWeather",
+            "manufacturer": "Lomion-tm",
             "model": "One Call API 3.0",
         }
