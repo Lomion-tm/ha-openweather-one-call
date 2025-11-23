@@ -10,7 +10,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import (
     CONCENTRATION_PARTS_PER_MILLION,
     DEGREE,
-    LENGTH_METERS,
+    UnitOfLength,
     PERCENTAGE,
     PRESSURE_HPA,
     SPEED_METERS_PER_SECOND,
@@ -28,7 +28,7 @@ SENSOR_TYPES = {
     "dew_point": {"device_class": SensorDeviceClass.TEMPERATURE, "unit": TEMP_CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
     "clouds": {"device_class": None, "unit": PERCENTAGE, "state_class": SensorStateClass.MEASUREMENT},
     "uvi": {"device_class": None, "unit": UV_INDEX, "state_class": SensorStateClass.MEASUREMENT},
-    "visibility": {"device_class": None, "unit": LENGTH_METERS, "state_class": SensorStateClass.MEASUREMENT},
+    "visibility": {"device_class": None, "unit": UnitOfLength.METERS, "state_class": SensorStateClass.MEASUREMENT},
     "wind_speed": {"device_class": None, "unit": SPEED_METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
     "wind_deg": {"device_class": None, "unit": DEGREE, "state_class": SensorStateClass.MEASUREMENT},
     "wind_gust": {"device_class": None, "unit": SPEED_METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
