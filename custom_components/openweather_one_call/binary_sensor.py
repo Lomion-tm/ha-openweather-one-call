@@ -7,7 +7,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
+from .const import DOMAIN, CONF_NAME
 
 
 async def async_setup_entry(
@@ -76,7 +76,7 @@ class OpenWeatherOneCallBinarySensor(CoordinatorEntity, BinarySensorEntity):
         """Link this entity to the device registry."""
         return {
             "identifiers": {(DOMAIN, self.config_entry.entry_id)},
-            "name": self.config_entry.data["name"],
+            "name": self.config_entry.data[CONF_NAME],
             "manufacturer": "Lomion-tm",
             "model": "One Call API 3.0",
         }

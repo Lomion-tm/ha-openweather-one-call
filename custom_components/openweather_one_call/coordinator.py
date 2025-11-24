@@ -13,9 +13,6 @@ from homeassistant.core import HomeAssistant
 from .const import (
     DOMAIN,
     API_ENDPOINT,
-    CONF_API_KEY,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
 )
 
 _LOGGER = logging.getLogger(__name__)

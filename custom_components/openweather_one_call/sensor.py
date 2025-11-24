@@ -53,6 +53,7 @@ async def async_setup_entry(
     """Set up the sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     
+    entities = []
     # Current weather sensors
     for sensor_type_key, sensor_config in SENSOR_TYPES.items():
         if sensor_type_key.startswith("current."):
@@ -78,17 +79,14 @@ async def async_setup_entry(
                 )
             )
 
-    async_add_entities(entities)
-
-    if coordinator.data.get("alerts"):
-        async_add_entities(
-            [
-                OpenWeatherOneCallAlertSensor(
-                    coordinator=coordinator,
-                    config_entry=entry,
-                )
-            ]
+    entities.append(
+        OpenWeatherOneCallAlertSensor(
+            coordinator=coordinator,
+            config_entry=entry,
         )
+    )
+
+    async_add_entities(entities)
 
 
 class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
@@ -139,6 +137,10 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
             else:
                 value = None
                 break
+        
+        if self._sensor_type == "pop" and value is not None:
+            return value * 100
+            
         return value
 
     @property
