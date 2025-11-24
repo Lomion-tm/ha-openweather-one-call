@@ -21,27 +21,28 @@ from .const import DOMAIN, CONF_NAME
 from .coordinator import OpenWeatherOneCallCoordinator
 
 SENSOR_TYPES = {
-    "temp": {"description": "Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "feels_like": {"description": "Feels Like Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "pressure": {"description": "Pressure", "device_class": SensorDeviceClass.PRESSURE, "unit": UnitOfPressure.HPA, "state_class": SensorStateClass.MEASUREMENT},
-    "humidity": {"description": "Humidity", "device_class": SensorDeviceClass.HUMIDITY, "unit": PERCENTAGE, "state_class": SensorStateClass.MEASUREMENT},
-    "dew_point": {"description": "Dew Point", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "clouds": {"description": "Cloudiness", "device_class": None, "unit": PERCENTAGE, "state_class": SensorStateClass.MEASUREMENT},
-    "uvi": {"description": "UV Index", "device_class": None, "unit": UV_INDEX, "state_class": SensorStateClass.MEASUREMENT},
-    "visibility": {"description": "Visibility", "device_class": None, "unit": UnitOfLength.METERS, "state_class": SensorStateClass.MEASUREMENT},
-    "wind_speed": {"description": "Wind Speed", "device_class": None, "unit": UnitOfSpeed.METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
-    "wind_deg": {"description": "Wind Degree", "device_class": None, "unit": DEGREE, "state_class": SensorStateClass.MEASUREMENT},
-    "wind_gust": {"description": "Wind Gust", "device_class": None, "unit": UnitOfSpeed.METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
-    "weather_main": {"description": "Weather Condition", "device_class": None, "unit": None, "state_class": None},
-    "weather_description": {"description": "Weather Description", "device_class": None, "unit": None, "state_class": None},
+    "current.temp": {"description": "Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "current.feels_like": {"description": "Feels Like Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "current.pressure": {"description": "Pressure", "device_class": SensorDeviceClass.PRESSURE, "unit": UnitOfPressure.HPA, "state_class": SensorStateClass.MEASUREMENT},
+    "current.humidity": {"description": "Humidity", "device_class": SensorDeviceClass.HUMIDITY, "unit": PERCENTAGE, "state_class": SensorStateClass.MEASUREMENT},
+    "current.dew_point": {"description": "Dew Point", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "current.clouds": {"description": "Cloudiness", "device_class": None, "unit": PERCENTAGE, "state_class": SensorStateClass.MEASUREMENT},
+    "current.uvi": {"description": "UV Index", "device_class": None, "unit": UV_INDEX, "state_class": SensorStateClass.MEASUREMENT},
+    "current.visibility": {"description": "Visibility", "device_class": None, "unit": UnitOfLength.METERS, "state_class": SensorStateClass.MEASUREMENT},
+    "current.wind_speed": {"description": "Wind Speed", "device_class": None, "unit": UnitOfSpeed.METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
+    "current.wind_deg": {"description": "Wind Degree", "device_class": None, "unit": DEGREE, "state_class": SensorStateClass.MEASUREMENT},
+    "current.wind_gust": {"description": "Wind Gust", "device_class": None, "unit": UnitOfSpeed.METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
+    "current.weather.0.main": {"description": "Weather Condition", "device_class": None, "unit": None, "state_class": None},
+    "current.weather.0.description": {"description": "Weather Description", "device_class": None, "unit": None, "state_class": None},
+    
+    # Daily forecast sensors (keys within the daily object)
+    "temp.day": {"description": "Daytime Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "temp.min": {"description": "Minimum Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "temp.max": {"description": "Maximum Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "temp.night": {"description": "Nighttime Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "temp.eve": {"description": "Evening Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
+    "temp.morn": {"description": "Morning Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
     "pop": {"description": "Probability of Precipitation", "device_class": None, "unit": PERCENTAGE, "state_class": SensorStateClass.MEASUREMENT},
-    "daily_temp_day": {"description": "Daytime Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "daily_temp_min": {"description": "Minimum Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "daily_temp_max": {"description": "Maximum Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "daily_temp_night": {"description": "Nighttime Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "daily_temp_eve": {"description": "Evening Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "daily_temp_morn": {"description": "Morning Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
-    "daily_pop": {"description": "Probability of Precipitation", "device_class": None, "unit": PERCENTAGE, "state_class": SensorStateClass.MEASUREMENT},
 }
 
 async def async_setup_entry(
@@ -52,18 +53,30 @@ async def async_setup_entry(
     """Set up the sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     
-    entities = []
-    
     # Current weather sensors
-    for sensor_type in SENSOR_TYPES:
-        if sensor_type.startswith("daily_"):
-            continue
-        entities.append(OpenWeatherOneCallSensor(coordinator, entry, sensor_type))
+    for sensor_type_key, sensor_config in SENSOR_TYPES.items():
+        if sensor_type_key.startswith("current."):
+            entities.append(
+                OpenWeatherOneCallSensor(
+                    coordinator, entry, sensor_type_key,
+                    device_class=sensor_config.get("device_class"),
+                    state_class=sensor_config.get("state_class"),
+                    unit=sensor_config.get("unit"),
+                )
+            )
         
     # Daily forecast sensors (for today)
-    for sensor_type in SENSOR_TYPES:
-        if sensor_type.startswith("daily_"):
-            entities.append(OpenWeatherOneCallSensor(coordinator, entry, sensor_type, forecast_day=0))
+    for sensor_type_key, sensor_config in SENSOR_TYPES.items():
+        if not sensor_type_key.startswith("current."): # These are our daily forecast keys
+            entities.append(
+                OpenWeatherOneCallSensor(
+                    coordinator, entry, sensor_type_key, # e.g., "temp.day"
+                    device_class=sensor_config.get("device_class"),
+                    state_class=sensor_config.get("state_class"),
+                    unit=sensor_config.get("unit"),
+                    forecast_day=0 # Pass forecast_day for daily sensors
+                )
+            )
 
     async_add_entities(entities)
 
