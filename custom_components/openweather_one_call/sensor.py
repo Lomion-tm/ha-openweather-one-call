@@ -111,7 +111,7 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
         self._attr_device_class = device_class
         self._attr_state_class = state_class
         self._attr_native_unit_of_measurement = unit
-        self._attr_translation_key = sensor_type
+        self._attr_translation_key = sensor_type.replace(".", "_")
         self._attr_unique_id = f"{config_entry.entry_id}_{sensor_type}"
         self._forecast_day = forecast_day
 
