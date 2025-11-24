@@ -64,31 +64,42 @@ async def async_setup_entry(
         if sensor_type.startswith("daily_"):
             entities.append(OpenWeatherOneCallSensor(coordinator, entry, sensor_type, forecast_day=0))
 
-    async_add_entities(entities)
+    async_add_entities(sensors)
+
+    if coordinator.data.get("alerts"):
+        async_add_entities(
+            [
+                OpenWeatherOneCallAlertSensor(
+                    coordinator=coordinator,
+                    config_entry=entry,
+                )
+            ]
+        )
 
 
 class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
     """Representation of a Sensor."""
 
-    def __init__(self, coordinator, config_entry, sensor_type, forecast_day=None):
+    _attr_has_entity_name = True
+
+    def __init__(
+        self,
+        coordinator: OpenWeatherOneCallCoordinator,
+        config_entry: ConfigEntry,
+        sensor_type: str,
+        device_class: SensorDeviceClass | None = None,
+        state_class: SensorStateClass | None = None,
+        unit: str | None = None,
+    ):
         """Pass coordinator to CoordinatorEntity."""
         super().__init__(coordinator)
         self.config_entry = config_entry
         self._sensor_type = sensor_type
-        self._forecast_day = forecast_day
-
+        self._attr_device_class = device_class
+        self._attr_state_class = state_class
+        self._attr_native_unit_of_measurement = unit
+        self._attr_translation_key = sensor_type
         self._attr_unique_id = f"{config_entry.entry_id}_{sensor_type}"
-        if forecast_day is not None:
-            self._attr_unique_id += f"_{forecast_day}d"
-            day_suffix = "Today" if forecast_day == 0 else f"in {forecast_day}d"
-            self._attr_name = f"{config_entry.data['name']} {SENSOR_TYPES[sensor_type]['description']} {day_suffix}"
-        else:
-            self._attr_has_entity_name = True
-            self._attr_translation_key = sensor_type
-             
-        self._attr_device_class = SENSOR_TYPES[sensor_type]["device_class"]
-        self._attr_native_unit_of_measurement = SENSOR_TYPES[sensor_type]["unit"]
-        self._attr_state_class = SENSOR_TYPES[sensor_type]["state_class"]
 
     @property
     def native_value(self):
@@ -97,25 +108,63 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
         if data is None:
             return None
 
-        if self._forecast_day is not None:
-            if 'daily' in data and len(data['daily']) > self._forecast_day:
-                daily_data = data['daily'][self._forecast_day]
-                if self._sensor_type == "daily_pop":
-                    return daily_data.get('pop', 0) * 100
-                elif self._sensor_type.startswith("daily_temp_"):
-                    temp_key = self._sensor_type.replace("daily_temp_", "")
-                    return daily_data.get('temp', {}).get(temp_key)
-                return daily_data.get(self._sensor_type)
-        else:
-            if 'current' in data:
-                if self._sensor_type == "pop":
-                    if 'hourly' in data and data['hourly']:
-                        return data['hourly'][0].get('pop', 0) * 100
-                elif self._sensor_type.startswith("weather_"):
-                    weather_key = self._sensor_type.replace("weather_", "")
-                    if 'weather' in data['current'] and data['current']['weather']:
-                        return data['current']['weather'][0].get(weather_key)
-                return data['current'].get(self._sensor_type)
+        keys = self._sensor_type.split(".")
+        value = data
+        for key in keys:
+            if isinstance(value, dict):
+                value = value.get(key)
+            elif isinstance(value, list) and key.isdigit() and len(value) > int(key):
+                value = value[int(key)]
+            else:
+                value = None
+                break
+        return value
+
+    @property
+    def device_info(self):
+        """Link this entity to the device registry."""
+        return {
+            "identifiers": {(DOMAIN, self.config_entry.entry_id)},
+            "name": self.config_entry.data[CONF_NAME],
+            "manufacturer": "Lomion-tm",
+            "model": "One Call API 3.0",
+        }
+
+
+class OpenWeatherOneCallAlertSensor(CoordinatorEntity, SensorEntity):
+    """Representation of a Weather Alert Sensor."""
+
+    _attr_has_entity_name = True
+
+    def __init__(
+        self,
+        coordinator: OpenWeatherOneCallCoordinator,
+        config_entry: ConfigEntry,
+    ):
+        """Pass coordinator to CoordinatorEntity."""
+        super().__init__(coordinator)
+        self.config_entry = config_entry
+        self._attr_translation_key = "weather_alert"
+        self._attr_unique_id = f"{config_entry.entry_id}_weather_alert"
+
+    @property
+    def native_value(self):
+        """Return the state of the sensor."""
+        if self.coordinator.data and self.coordinator.data.get("alerts"):
+            return self.coordinator.data["alerts"][0].get("event")
+        return "No active alerts"
+
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        if self.coordinator.data and self.coordinator.data.get("alerts"):
+            alert = self.coordinator.data["alerts"][0]
+            return {
+                "sender_name": alert.get("sender_name"),
+                "start": alert.get("start"),
+                "end": alert.get("end"),
+                "description": alert.get("description"),
+            }
         return None
 
     @property
@@ -123,7 +172,7 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
         """Link this entity to the device registry."""
         return {
             "identifiers": {(DOMAIN, self.config_entry.entry_id)},
-            "name": self.config_entry.data["name"],
+            "name": self.config_entry.data[CONF_NAME],
             "manufacturer": "Lomion-tm",
             "model": "One Call API 3.0",
         }

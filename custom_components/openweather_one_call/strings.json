@@ -54,7 +54,8 @@
       "daily_temp_night": { "name": "Daily Temperature (Night)" },
       "daily_temp_eve": { "name": "Daily Temperature (Evening)" },
       "daily_temp_morn": { "name": "Daily Temperature (Morning)" },
-      "daily_pop": { "name": "Daily Probability of Precipitation" }
+      "daily_pop": { "name": "Daily Probability of Precipitation" },
+      "weather_alert": { "name": "Weather Alert" }
     },
     "binary_sensor": {
       "alerts_active": { "name": "Weather Alerts Active" }

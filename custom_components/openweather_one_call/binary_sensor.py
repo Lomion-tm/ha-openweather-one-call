@@ -56,6 +56,22 @@ class OpenWeatherOneCallBinarySensor(CoordinatorEntity, BinarySensorEntity):
         return None
 
     @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        data = self.coordinator.data
+        if data is None or not data.get("alerts"):
+            return None
+
+        if self._sensor_type == "alerts_active":
+            alert = data["alerts"][0]
+            return {
+                "sender_name": alert.get("sender_name"),
+                "event": alert.get("event"),
+                "description": alert.get("description"),
+            }
+        return None
+
+    @property
     def device_info(self):
         """Link this entity to the device registry."""
         return {
