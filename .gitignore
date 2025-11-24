@@ -4,4 +4,11 @@ __pycache__/
 .venv/
 auth.json
 GEMINI.md
-HomeAssstantDevCheatSheet.md
+HomeAssistantDevCheatSheet.md
+current_forecasts_weather.md
+weather_data_for_timestamp.md
+ai_weather_assistant_session_start.md
+api_ref.md
+daily_aggregation.md
+ai_weather_assistant_resume_session.md
+weather_overview.md
