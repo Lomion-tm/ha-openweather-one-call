@@ -17,7 +17,8 @@ from homeassistant.const import (
     UV_INDEX,
 )
 
-from .const import DOMAIN
+from .const import DOMAIN, CONF_NAME
+from .coordinator import OpenWeatherOneCallCoordinator
 
 SENSOR_TYPES = {
     "temp": {"description": "Temperature", "device_class": SensorDeviceClass.TEMPERATURE, "unit": UnitOfTemperature.CELSIUS, "state_class": SensorStateClass.MEASUREMENT},
