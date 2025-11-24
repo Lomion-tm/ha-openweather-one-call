@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from homeassistant.components.sensor import (
     SensorEntity,
     SensorDeviceClass,
@@ -144,6 +145,9 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
         
         if self._sensor_type == "pop" and value is not None:
             return value * 100
+
+        if self.device_class == SensorDeviceClass.TIMESTAMP and value is not None:
+            return datetime.fromtimestamp(value, tz=timezone.utc)
             
         return value
 
