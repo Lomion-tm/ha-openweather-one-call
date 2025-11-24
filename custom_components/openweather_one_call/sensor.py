@@ -65,7 +65,7 @@ async def async_setup_entry(
         if sensor_type.startswith("daily_"):
             entities.append(OpenWeatherOneCallSensor(coordinator, entry, sensor_type, forecast_day=0))
 
-    async_add_entities(sensors)
+    async_add_entities(entities)
 
     if coordinator.data.get("alerts"):
         async_add_entities(
@@ -91,6 +91,7 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
         device_class: SensorDeviceClass | None = None,
         state_class: SensorStateClass | None = None,
         unit: str | None = None,
+        forecast_day: int | None = None,
     ):
         """Pass coordinator to CoordinatorEntity."""
         super().__init__(coordinator)
@@ -101,6 +102,7 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
         self._attr_native_unit_of_measurement = unit
         self._attr_translation_key = sensor_type
         self._attr_unique_id = f"{config_entry.entry_id}_{sensor_type}"
+        self._forecast_day = forecast_day
 
     @property
     def native_value(self):
@@ -108,6 +110,11 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
         data = self.coordinator.data
         if data is None:
             return None
+
+        if self._forecast_day is not None:
+            if "daily" not in data or len(data["daily"]) <= self._forecast_day:
+                return None
+            data = data["daily"][self._forecast_day]
 
         keys = self._sensor_type.split(".")
         value = data
