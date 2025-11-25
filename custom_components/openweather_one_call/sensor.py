@@ -35,6 +35,8 @@ SENSOR_TYPES = {
     "current.wind_gust": {"description": "Wind Gust", "device_class": None, "unit": UnitOfSpeed.METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
     "current.sunrise": {"description": "Sunrise", "device_class": SensorDeviceClass.TIMESTAMP, "unit": None, "state_class": None},
     "current.sunset": {"description": "Sunset", "device_class": SensorDeviceClass.TIMESTAMP, "unit": None, "state_class": None},
+    "current.sunrise_time": {"description": "Sunrise Time", "device_class": None, "unit": None, "state_class": None},
+    "current.sunset_time": {"description": "Sunset Time", "device_class": None, "unit": None, "state_class": None},
     "current.rain.1h": {"description": "Rain (last 1h)", "device_class": SensorDeviceClass.PRECIPITATION, "unit": "mm/h", "state_class": SensorStateClass.MEASUREMENT}, # Using custom unit string
     "current.snow.1h": {"description": "Snow (last 1h)", "device_class": SensorDeviceClass.PRECIPITATION, "unit": "mm/h", "state_class": SensorStateClass.MEASUREMENT}, # Using custom unit string
     "current.weather.0.main": {"description": "Weather Condition", "device_class": None, "unit": None, "state_class": None},
@@ -123,6 +125,13 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
     @property
     def native_value(self):
         """Return the state of the sensor."""
+        # Remap sensor type to data source key if necessary
+        source_key = self._sensor_type
+        if self._sensor_type == "current.sunrise_time":
+            source_key = "current.sunrise"
+        elif self._sensor_type == "current.sunset_time":
+            source_key = "current.sunset"
+
         data = self.coordinator.data
         if data is None:
             return None
@@ -132,7 +141,7 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
                 return None
             data = data["daily"][self._forecast_day]
 
-        keys = self._sensor_type.split(".")
+        keys = source_key.split(".")
         value = data
         for key in keys:
             if isinstance(value, dict):
@@ -143,6 +152,12 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
                 value = None
                 break
         
+        # Format value for specific sensor types
+        if self._sensor_type in ("current.sunrise_time", "current.sunset_time"):
+            if value:
+                return datetime.fromtimestamp(value, tz=timezone.utc).strftime("%H:%M")
+            return None
+
         if self._sensor_type == "pop" and value is not None:
             return value * 100
 
