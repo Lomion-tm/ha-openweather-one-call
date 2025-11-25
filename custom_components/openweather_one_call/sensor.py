@@ -155,7 +155,9 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
         # Format value for specific sensor types
         if self._sensor_type in ("current.sunrise_time", "current.sunset_time"):
             if value:
-                return datetime.fromtimestamp(value, tz=timezone.utc).strftime("%H:%M")
+                utc_dt = datetime.fromtimestamp(value, tz=timezone.utc)
+                local_dt = utc_dt.astimezone(self.coordinator.hass.config.time_zone_object)
+                return local_dt.strftime("%H:%M")
             return None
 
         if self._sensor_type == "pop" and value is not None:
