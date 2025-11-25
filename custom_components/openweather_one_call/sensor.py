@@ -86,21 +86,23 @@ async def async_setup_entry(
     ]
 
     for day_index in range(2):  # 0 for today, 1 for tomorrow
-        for source_key in daily_sensor_keys_to_create:
-            if source_key not in SENSOR_TYPES:
+        for base_key in daily_sensor_keys_to_create:
+            if base_key not in SENSOR_TYPES:
                 continue
 
+            # Determine the actual data source key from the base key
+            data_source_key = base_key.replace("_time", "") if base_key.endswith("_time") else base_key
+
             # Create a unique sensor_type for the entity's unique_id and translation_key
-            # e.g., "daily_0_sunrise" or "daily_1_temp_max"
-            unique_sensor_type = f"daily_{day_index}_{source_key.replace('.', '_')}"
-            sensor_config = SENSOR_TYPES[source_key]
+            unique_sensor_type = f"daily_{day_index}_{base_key.replace('.', '_')}"
+            sensor_config = SENSOR_TYPES[base_key]
 
             entities.append(
                 OpenWeatherOneCallSensor(
                     coordinator,
                     entry,
                     sensor_type=unique_sensor_type,
-                    source_key=source_key,
+                    source_key=data_source_key,
                     forecast_day=day_index,
                     device_class=sensor_config.get("device_class"),
                     state_class=sensor_config.get("state_class"),
