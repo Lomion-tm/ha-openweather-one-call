@@ -60,7 +60,11 @@
       "temp_eve": { "name": "Evening Temperature" },
       "temp_morn": { "name": "Morning Temperature" },
       "pop": { "name": "Probability of Precipitation" },
-      "weather_alert": { "name": "Weather Alert" }
+      "weather_alert": { "name": "Weather Alert" },
+      "tomorrow_sunrise": { "name": "Tomorrow Sunrise" },
+      "tomorrow_sunset": { "name": "Tomorrow Sunset" },
+      "tomorrow_sunrise_time": { "name": "Tomorrow Sunrise Time" },
+      "tomorrow_sunset_time": { "name": "Tomorrow Sunset Time" }
     },
     "binary_sensor": {
       "alerts_active": { "name": "Weather Alerts Active" }
