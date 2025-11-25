@@ -36,8 +36,6 @@ SENSOR_TYPES = {
     "current.wind_gust": {"description": "Wind Gust", "device_class": None, "unit": UnitOfSpeed.METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
     "current.sunrise": {"description": "Sunrise", "device_class": SensorDeviceClass.TIMESTAMP, "unit": None, "state_class": None},
     "current.sunset": {"description": "Sunset", "device_class": SensorDeviceClass.TIMESTAMP, "unit": None, "state_class": None},
-    "current.sunrise_time": {"description": "Sunrise Time", "device_class": None, "unit": None, "state_class": None},
-    "current.sunset_time": {"description": "Sunset Time", "device_class": None, "unit": None, "state_class": None},
     "current.rain.1h": {"description": "Rain (last 1h)", "device_class": SensorDeviceClass.PRECIPITATION, "unit": "mm/h", "state_class": SensorStateClass.MEASUREMENT}, # Using custom unit string
     "current.snow.1h": {"description": "Snow (last 1h)", "device_class": SensorDeviceClass.PRECIPITATION, "unit": "mm/h", "state_class": SensorStateClass.MEASUREMENT}, # Using custom unit string
     "current.weather.0.main": {"description": "Weather Condition", "device_class": None, "unit": None, "state_class": None},
@@ -66,48 +64,51 @@ async def async_setup_entry(
     coordinator = hass.data[DOMAIN][entry.entry_id]
     
     entities = []
-    # Current weather sensors
+    
+    # --- Create sensors for CURRENT conditions ---
     for sensor_type_key, sensor_config in SENSOR_TYPES.items():
         if sensor_type_key.startswith("current."):
             entities.append(
                 OpenWeatherOneCallSensor(
-                    coordinator, entry, sensor_type_key,
+                    coordinator,
+                    entry,
+                    sensor_type=sensor_type_key,
                     device_class=sensor_config.get("device_class"),
                     state_class=sensor_config.get("state_class"),
                     unit=sensor_config.get("unit"),
                 )
             )
-        
-    # Daily forecast sensors (for today)
-    for sensor_type_key, sensor_config in SENSOR_TYPES.items():
-        if not sensor_type_key.startswith("current."): # These are our daily forecast keys
+
+    # --- Create sensors for DAILY forecasts (Today and Tomorrow) ---
+    daily_sensor_keys_to_create = [
+        "temp.day", "temp.min", "temp.max", "temp.night", "temp.eve", "temp.morn", "pop",
+        "sunrise", "sunset", "sunrise_time", "sunset_time"
+    ]
+
+    for day_index in range(2):  # 0 for today, 1 for tomorrow
+        for source_key in daily_sensor_keys_to_create:
+            if source_key not in SENSOR_TYPES:
+                continue
+
+            # Create a unique sensor_type for the entity's unique_id and translation_key
+            # e.g., "daily_0_sunrise" or "daily_1_temp_max"
+            unique_sensor_type = f"daily_{day_index}_{source_key.replace('.', '_')}"
+            sensor_config = SENSOR_TYPES[source_key]
+
             entities.append(
                 OpenWeatherOneCallSensor(
-                    coordinator, entry, sensor_type_key, # e.g., "temp.day"
+                    coordinator,
+                    entry,
+                    sensor_type=unique_sensor_type,
+                    source_key=source_key,
+                    forecast_day=day_index,
                     device_class=sensor_config.get("device_class"),
                     state_class=sensor_config.get("state_class"),
                     unit=sensor_config.get("unit"),
-                    forecast_day=0 # Pass forecast_day for daily sensors
                 )
             )
 
-    # Create tomorrow's sunrise/sunset sensors
-    tomorrow_sensor_keys = ["sunrise", "sunset", "sunrise_time", "sunset_time"]
-    for source_key in tomorrow_sensor_keys:
-        sensor_config = SENSOR_TYPES[source_key]
-        entities.append(
-            OpenWeatherOneCallSensor(
-                coordinator,
-                entry,
-                sensor_type=f"tomorrow_{source_key}",
-                source_key=source_key,
-                forecast_day=1, # Data from daily[1]
-                device_class=sensor_config.get("device_class"),
-                state_class=sensor_config.get("state_class"),
-                unit=sensor_config.get("unit"),
-            )
-        )
-
+    # --- Create weather alert sensor ---
     entities.append(
         OpenWeatherOneCallAlertSensor(
             coordinator=coordinator,
@@ -149,15 +150,8 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
     @property
     def native_value(self):
         """Return the state of the sensor."""
-        # Prioritize source_key for data lookup, fallback to sensor_type
+        # Use source_key for data lookup if provided, otherwise default to sensor_type
         lookup_key = self._source_key or self._sensor_type
-
-        # This special handling for current sunrise/sunset time is a bit of a legacy.
-        # It's kept to not break the existing `current.sunrise_time` sensor.
-        if self._sensor_type == "current.sunrise_time":
-            lookup_key = "current.sunrise"
-        elif self._sensor_type == "current.sunset_time":
-            lookup_key = "current.sunset"
 
         data = self.coordinator.data
         if data is None:
@@ -181,14 +175,14 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
         
         # Format value for specific sensor types based on the unique sensor_type
         if self._sensor_type.endswith(("_sunrise_time", "_sunset_time")):
-            if value:
+            if value is not None:
                 utc_dt = datetime.fromtimestamp(value, tz=timezone.utc)
                 local_dt = dt_util.as_local(utc_dt)
                 return local_dt.strftime("%H:%M")
             return None
 
-        # The check for 'pop' needs to be against the lookup_key as it's a daily sensor without a prefix
-        if lookup_key == "pop" and value is not None:
+        # The check for 'pop' needs to be against the source_key
+        if self._source_key == "pop" and value is not None:
             return value * 100
 
         if self.device_class == SensorDeviceClass.TIMESTAMP and value is not None:
