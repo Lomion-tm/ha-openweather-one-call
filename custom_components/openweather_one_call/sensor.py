@@ -34,8 +34,6 @@ SENSOR_TYPES = {
     "current.wind_speed": {"description": "Wind Speed", "device_class": None, "unit": UnitOfSpeed.METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
     "current.wind_deg": {"description": "Wind Degree", "device_class": None, "unit": DEGREE, "state_class": SensorStateClass.MEASUREMENT},
     "current.wind_gust": {"description": "Wind Gust", "device_class": None, "unit": UnitOfSpeed.METERS_PER_SECOND, "state_class": SensorStateClass.MEASUREMENT},
-    "current.sunrise": {"description": "Sunrise", "device_class": SensorDeviceClass.TIMESTAMP, "unit": None, "state_class": None},
-    "current.sunset": {"description": "Sunset", "device_class": SensorDeviceClass.TIMESTAMP, "unit": None, "state_class": None},
     "current.rain.1h": {"description": "Rain (last 1h)", "device_class": SensorDeviceClass.PRECIPITATION, "unit": "mm/h", "state_class": SensorStateClass.MEASUREMENT}, # Using custom unit string
     "current.snow.1h": {"description": "Snow (last 1h)", "device_class": SensorDeviceClass.PRECIPITATION, "unit": "mm/h", "state_class": SensorStateClass.MEASUREMENT}, # Using custom unit string
     "current.weather.0.main": {"description": "Weather Condition", "device_class": None, "unit": None, "state_class": None},

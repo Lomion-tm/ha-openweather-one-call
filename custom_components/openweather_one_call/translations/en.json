@@ -45,8 +45,6 @@
       "current_wind_speed": { "name": "Wind Speed" },
       "current_wind_deg": { "name": "Wind Degree" },
       "current_wind_gust": { "name": "Wind Gust" },
-      "current_sunrise": { "name": "Sunrise" },
-      "current_sunset": { "name": "Sunset" },
       "current_sunrise_time": { "name": "Sunrise Time" },
       "current_sunset_time": { "name": "Sunset Time" },
       "current_rain_1h": { "name": "Rain (last 1h)" },
