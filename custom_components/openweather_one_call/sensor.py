@@ -8,6 +8,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.util import dt as dt_util
 from homeassistant.const import (
     DEGREE,
     UnitOfLength,
@@ -156,7 +157,7 @@ class OpenWeatherOneCallSensor(CoordinatorEntity, SensorEntity):
         if self._sensor_type in ("current.sunrise_time", "current.sunset_time"):
             if value:
                 utc_dt = datetime.fromtimestamp(value, tz=timezone.utc)
-                local_dt = utc_dt.astimezone(self.coordinator.hass.config.time_zone_object)
+                local_dt = dt_util.as_local(utc_dt)
                 return local_dt.strftime("%H:%M")
             return None
 
